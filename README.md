@@ -1,2 +1,2 @@
 # bb-blockrenderer
-Test.
+Test 2.
