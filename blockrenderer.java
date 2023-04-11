@@ -19,9 +19,9 @@ public class blockrenderer {
     }
 
     private int[][][] blocks; // 3d array
-    private static char[][] canvas; // printed to screen
-    private static int X = 22; // alignment values
-    private static int Y = 20;
+    private char[][] canvas; // printed to screen
+    private static final int X = 22; // alignment values
+    private static final int Y = 20;
 
     public blockrenderer() {
         this(10,8,4);
@@ -42,7 +42,7 @@ public class blockrenderer {
         return blocks;
     }
     
-    public static char[][] canvas() {
+    public char[][] canvas() {
         return canvas;
     }
 
@@ -214,8 +214,8 @@ public class blockrenderer {
         List<Tuple<Integer,Integer,Integer>> order = getSortedCoordinates(b.blocks());
         while(true) {
             b.rainBlocks(b.blocks);
-            draw(b.blocks(),canvas(), order);
-            display(blockrenderer.canvas);
+            draw(b.blocks(),b.canvas(), order);
+            display(b.canvas);
             b.physics(b.blocks);
             wait(10);
         }
