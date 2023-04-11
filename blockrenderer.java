@@ -46,7 +46,7 @@ public class blockrenderer {
         return canvas;
     }
 
-    public static void clear() { // all chars on canvas to ' '
+    public void clear() { // all chars on canvas to ' '
         for(int i = 0; i < canvas.length; i++) {
             for(int j = 0; j < canvas[0].length; j++) {
                 canvas[i][j] = ' '; // for all chars make them ' '
