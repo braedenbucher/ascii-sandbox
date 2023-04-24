@@ -1,23 +1,7 @@
-
-import java.util.ArrayList; // for tuple
-import java.util.Collections; // for sorted coordinates
-import java.util.List; // for tuple
+import java.util.Arrays;
+import java.util.Comparator;
 
 public class blockrenderer {
-    private static class Tuple<X, Y, Z> { // mimic tuple variable in python, quick 3-element list
-        public final X x; // first element
-        public final Y y; // second element
-        public final Z z; // third element
-        public Tuple(X x, Y y, Z z) { // constructor to initialize elements
-            this.x = x;
-            this.y = y;
-            this.z = z;
-        }
-        public int sum() { // sum the elements
-            return ((Integer) x) + ((Integer) y) + ((Integer) z);
-        }
-    }
-
     private int[][][] blocks; // 3d array
     private char[][] canvas; // printed to screen
     private static final int X = 22; // alignment values
@@ -58,28 +42,31 @@ public class blockrenderer {
     // block that exist, sorted in ascending order by the sum of the elements in each coordinate.
     // This tells the draw function which coordinates to draw first so the blocks
     // in the back are printed first and the blocks in the front are printed last */
-    public static List<Tuple<Integer, Integer, Integer>> getSortedCoordinates(int[][][] blocks) {
+    public static int[][][][] getSortedCoordinates(int[][][] blocks) {
         int X = blocks[0].length; // length of X
         int Y = blocks[0][0].length; // length of Y
         int Z = blocks.length; // length of Z
-        List<Tuple<Integer, Integer, Integer>> mylist = new ArrayList<>(); // make a list of 3 element tuples of the same dimensions
+        int[][][][] sorted = new int[Z][X][Y][3]; // make a list of 3 element tuples of the same dimensions
         for (int z = 0; z < Z; z++) {
-            for (int y = 0; y < Y; y++) {
-                for (int x = 0; x < X; x++) {
-                    mylist.add(new Tuple<>(x, y, z)); // each tuple element is that cell's coordinates
+            for (int x = 0; x < X; x++) {
+                for (int y = 0; y < Y; y++) {
+                    sorted[z][x][y] = new int[]{z, x, y}; // each tuple element is that cell's coordinates
                 }
             }
         }
-        Collections.sort(mylist, (t1, t2) -> Integer.compare(t1.sum(), t2.sum())); // command to sort tuple list I copied from internet
-        return mylist;
+        Arrays.sort(sorted, Comparator.comparingInt(t -> t[0][0][0] + t[0][0][1] + t[0][0][2])); // sort the list based on sum of the elements in each tuple
+        return sorted;
     }
 
-    public static void draw(int[][][] blocks, char[][] canvas, List<Tuple<Integer, Integer, Integer>> order) {
+
+    public static void draw(int[][][] blocks, char[][] canvas, int[][][][] order) {
         clear(); // wipe existing canvas
-        for (Tuple<Integer, Integer, Integer> tuple : order) { // for each coord in sorted coord system
-            int x = tuple.x; 
-            int y = tuple.y;
-            int z = tuple.z;
+        for (int[][][] l1 : order) { // for each coord in sorted coord system
+        for (int[][] l2 : l1) {
+        for (int[] coord : l2) {
+            int x = coord[1]; 
+            int y = coord[2];
+            int z = coord[0];
             if (blocks[z][x][y] == 1) { // if block at current position
                 int YY = Y - (2 * z) + y; // alignment i can explain not in text
                 int XX = X - (3 * x) + (2 * y); // ^^^^
@@ -117,6 +104,8 @@ public class blockrenderer {
                 canvas[YY + 3][XX + 3] = '_';
                 canvas[YY + 3][XX + 4] = '|';
             }
+        }
+        }
         }
     }
 
@@ -211,7 +200,7 @@ public class blockrenderer {
 
     public static void main(String[] args) {
         blockrenderer b = new blockrenderer();
-        List<Tuple<Integer,Integer,Integer>> order = getSortedCoordinates(b.blocks());
+        int[][][][] order = getSortedCoordinates(b.blocks());
         while(true) {
             b.rainBlocks(b.blocks);
             draw(b.blocks(),b.canvas(), order);
