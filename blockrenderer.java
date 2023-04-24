@@ -14,7 +14,7 @@ public class blockrenderer {
     public blockrenderer(int hZ, int wX, int dY) { // constructor initializes blocks and canvas
         int cH = 3 + dY + (2*hZ);
         int cW = 19 + (2*dY)+ (3*wX);
-        this.blocks = new int[hZ][wX][dY];
+        blocks = new int[hZ][wX][dY];
         canvas = new char[cH][cW];
         // all block values to 0 (no block)
         for (int i = 0; i < hZ; i++) {for (int j = 0; j < wX; j++) {for (int k = 0; k < dY; k++) {blocks[i][j][k] = 0;}}}
@@ -58,9 +58,9 @@ public class blockrenderer {
         return sorted;
     }
 
-
     public static void draw(int[][][] blocks, char[][] canvas, int[][][][] order) {
-        clear(); // wipe existing canvas
+        for (int i = 0; i < canvas.length; i++) {for(int j = 0; j < canvas[0].length; j++) {canvas[i][j] = ' ';}} // all canvas chars to ' '
+        
         for (int[][][] l1 : order) { // for each coord in sorted coord system
         for (int[][] l2 : l1) {
         for (int[] coord : l2) {
