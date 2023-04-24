@@ -30,14 +30,6 @@ public class blockrenderer {
         return canvas;
     }
 
-    public void clear() { // all chars on canvas to ' '
-        for(int i = 0; i < canvas.length; i++) {
-            for(int j = 0; j < canvas[0].length; j++) {
-                canvas[i][j] = ' '; // for all chars make them ' '
-            }
-        }
-    }
-
     // Returns a list of 3-element tuples which contain the coordinates of each 
     // block that exist, sorted in ascending order by the sum of the elements in each coordinate.
     // This tells the draw function which coordinates to draw first so the blocks
