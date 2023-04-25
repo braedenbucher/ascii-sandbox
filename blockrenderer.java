@@ -33,12 +33,12 @@ public class blockrenderer {
     // Returns a list of 3-element tuples which contain the coordinates of each 
     // block that exist, sorted in ascending order by the sum of the elements in each coordinate.
     // This tells the draw function which coordinates to draw first so the blocks
-    // in the back are printed first and the blocks in the front are printed last */
+    // in the back are printed first and the blocks in the front are printed last
     public static int[][][][] getSortedCoordinates(int[][][] blocks) {
         int X = blocks[0].length; // length of X
         int Y = blocks[0][0].length; // length of Y
         int Z = blocks.length; // length of Z
-        int[][][][] sorted = new int[Z][X][Y][3]; // make a list of 3 element tuples of the same dimensions
+        int[][][][] sorted = new int[Z][X][Y][3]; // copy blocks list where each cell is now a 3-element list to put x, y, z coords into
         for (int z = 0; z < Z; z++) {
             for (int x = 0; x < X; x++) {
                 for (int y = 0; y < Y; y++) {
@@ -52,16 +52,15 @@ public class blockrenderer {
 
     public static void draw(int[][][] blocks, char[][] canvas, int[][][][] order) {
         for (int i = 0; i < canvas.length; i++) {for(int j = 0; j < canvas[0].length; j++) {canvas[i][j] = ' ';}} // all canvas chars to ' '
-        
-        for (int[][][] l1 : order) { // for each coord in sorted coord system
-        for (int[][] l2 : l1) {
-        for (int[] coord : l2) {
+        for (int[][][] l1 : order) { // for each 3d list
+        for (int[][] l2 : l1) { // for each 2d list
+        for (int[] coord : l2) { // for each 1d triplet (coordinate)
             int x = coord[1]; 
             int y = coord[2];
             int z = coord[0];
             if (blocks[z][x][y] == 1) { // if block at current position
-                int YY = Y - (2 * z) + y; // alignment i can explain not in text
-                int XX = X - (3 * x) + (2 * y); // ^^^^
+                int YY = Y - (2 * z) + y; // 3d coordinate of block --> 2d canvas location to print
+                int XX = X - (3 * x) + (2 * y); // no i dont know why it works i brute forced numbers till it worked
     
                 // Top of block, builds ___
                 if (canvas[YY][XX] == ' ') {
@@ -191,7 +190,7 @@ public class blockrenderer {
     }
 
     public static void main(String[] args) {
-        blockrenderer b = new blockrenderer();
+        blockrenderer b = new blockrenderer(10, 8, 4);
         int[][][][] order = getSortedCoordinates(b.blocks());
         while(true) {
             b.rainBlocks(b.blocks);
