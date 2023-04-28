@@ -4,7 +4,7 @@ import java.util.Comparator;
 public class blockrenderer {
     private int[][][] blocks; // 3d array
     private char[][] canvas; // printed to screen
-    private static final int X = 22; // alignment values
+    private static final int X = 22; // alignment values that will be changed
     private static final int Y = 20;
 
     public blockrenderer() {
@@ -60,7 +60,7 @@ public class blockrenderer {
             int z = coord[0];
             if (blocks[z][x][y] == 1) { // if block at current position
                 int YY = Y - (2 * z) + y; // 3d coordinate of block --> 2d canvas location to print
-                int XX = X - (3 * x) + (2 * y); // no i dont know why it works i brute forced numbers till it worked
+                int XX = X - (3 * x) + (2 * y); // long math explanation in README.md
     
                 // Top of block, builds ___
                 if (canvas[YY][XX] == ' ') {
@@ -190,9 +190,9 @@ public class blockrenderer {
     }
 
     public static void main(String[] args) {
-        blockrenderer b = new blockrenderer(2, 3, 1);
-        System.out.println("3d Height: " + b.blocks().length + " 3d Width: " + b.blocks()[0].length + " 3d Depth: " + b.blocks()[0][0].length);
-        System.out.println("Canvas Height: " + b.canvas().length + " Canvas Width: " + b.canvas()[0].length);
+        blockrenderer b = new blockrenderer(3, 4, 2);
+        System.out.println("Height: " + b.blocks().length + " Width: " + b.blocks()[0].length + " Depth: " + b.blocks()[0][0].length);
+        System.out.println("Height: " + b.canvas().length + " Width: " + b.canvas()[0].length);
         /*int[][][][] order = getSortedCoordinates(b.blocks());
         while(true) {
             b.rainBlocks(b.blocks);
@@ -203,3 +203,14 @@ public class blockrenderer {
         }*/
     }
 }
+
+/* ___________
+ *|\__\__\__\__\
+ *| |\__\__\__\__\
+ *|\| |  |  |  |  |
+ *| |\|__|__|__|__|
+ *|\| |  |  |  |  |
+ *| |\|__|__|__|__|
+ * \| |  |  |  |  |
+ *   \|__|__|__|__|
+ */
