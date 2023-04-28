@@ -12,8 +12,8 @@ public class blockrenderer {
     }
 
     public blockrenderer(int hZ, int wX, int dY) { // constructor initializes blocks and canvas
-        int cH = 3 + dY + (2*hZ);
-        int cW = 19 + (2*dY)+ (3*wX);
+        int cH = 1 + dY + (2*hZ);
+        int cW = 1 + (2*dY)+ (3*wX);
         blocks = new int[hZ][wX][dY];
         canvas = new char[cH][cW];
         // all block values to 0 (no block)
@@ -190,14 +190,16 @@ public class blockrenderer {
     }
 
     public static void main(String[] args) {
-        blockrenderer b = new blockrenderer(10, 8, 4);
-        int[][][][] order = getSortedCoordinates(b.blocks());
+        blockrenderer b = new blockrenderer(2, 3, 1);
+        System.out.println("3d Height: " + b.blocks().length + " 3d Width: " + b.blocks()[0].length + " 3d Depth: " + b.blocks()[0][0].length);
+        System.out.println("Canvas Height: " + b.canvas().length + " Canvas Width: " + b.canvas()[0].length);
+        /*int[][][][] order = getSortedCoordinates(b.blocks());
         while(true) {
             b.rainBlocks(b.blocks);
             draw(b.blocks(),b.canvas(), order);
             display(b.canvas);
             b.physics(b.blocks);
             wait(10);
-        }
+        }*/
     }
 }
