@@ -138,19 +138,6 @@ public class blockrenderer {
             }
         }
     }
-
-    public static void clearScreen() {  // code to help clear the terminal using system code
-        System.out.print("\033[H\033[2J"); // no i didnt write it
-        System.out.flush();
-    }
-
-    public static void wait(int ms) { // to pause for some milliseconds
-        try {
-            Thread.sleep(ms);
-        } catch(InterruptedException ex) {
-            Thread.currentThread().interrupt();
-        }
-    }
     
     public static void display(char[][] canvas) {
         StringBuilder temp = new StringBuilder(); // some way to turn chars into a string
@@ -189,11 +176,21 @@ public class blockrenderer {
         }
     }
 
+    public static void clearScreen() {  // clear the terminal using system code
+        System.out.print("\033[H\033[2J"); // no i didnt write it
+        System.out.flush();
+    }
+
+    public static void wait(int ms) { // pause the threat for X milliseconds
+        try {
+            Thread.sleep(ms);
+        } catch(InterruptedException ex) {
+            Thread.currentThread().interrupt(); // no i didnt write this either
+        }
+    }
+
     public static void main(String[] args) {
         blockrenderer b = new blockrenderer(10, 10, 10);
-        //System.out.println("Height: " + b.blocks().length + " Width: " + b.blocks()[0].length + " Depth: " + b.blocks()[0][0].length);
-        //System.out.println("Height: " + b.canvas().length + " Width: " + b.canvas()[0].length);
-        //System.out.println("YY: " + ((b.canvas().length-1) - ((1+0) * 2) - (b.blocks[0][0].length - 1)));
         int[][][][] order = getSortedCoordinates(b.blocks());
         while(true) {
             b.rainBlocks(b.blocks);
