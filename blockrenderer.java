@@ -4,8 +4,8 @@ import java.util.Comparator;
 public class blockrenderer {
     private int[][][] blocks; // 3d array
     private char[][] canvas; // printed to screen
-    private static final int X = 22; // alignment values that will be changed
-    private static final int Y = 20;
+    // private static final int X = 22; // alignment values that will be changed
+    // private static final int Y = 20; // delete eventually
 
     public blockrenderer() {
         this(10,8,4);
@@ -59,41 +59,41 @@ public class blockrenderer {
             int y = coord[2];
             int z = coord[0];
             if (blocks[z][x][y] == 1) { // if block at current position
-                int YY = Y - (2 * z) + y; // 3d coordinate of block --> 2d canvas location to print
-                int XX = X - (3 * x) + (2 * y); // long math explanation in README.md
+                int YY = (canvas.length-1) - ((1+z) * 2) - (blocks[0][0].length - y);
+                int XX = (canvas[0].length-1) - ((1+x) * 3) - ((blocks[0][0].length - y) * 2);
     
                 // Top of block, builds ___
-                if (canvas[YY][XX] == ' ') {
-                    canvas[YY][XX] = '_';
-                }
                 if (canvas[YY][XX + 1] == ' ') {
                     canvas[YY][XX + 1] = '_';
                 }
                 if (canvas[YY][XX + 2] == ' ') {
                     canvas[YY][XX + 2] = '_';
                 }
+                if (canvas[YY][XX + 3] == ' ') {
+                    canvas[YY][XX + 3] = '_';
+                }
                 
                 // Down a row, builds |\__\
-                canvas[YY + 1][XX - 1] = '|';
-                canvas[YY + 1][XX] = '\\';
-                canvas[YY + 1][XX + 1] = '_';
+                canvas[YY + 1][XX] = '|';
+                canvas[YY + 1][XX + 1] = '\\';
                 canvas[YY + 1][XX + 2] = '_';
-                canvas[YY + 1][XX + 3] = '\\';
+                canvas[YY + 1][XX + 3] = '_';
+                canvas[YY + 1][XX + 4] = '\\';
                 
                 // Down another row, builds | |  |
-                canvas[YY + 2][XX - 1] = '|';
-                canvas[YY + 2][XX] = ' ';
-                canvas[YY + 2][XX + 1] = '|';
-                canvas[YY + 2][XX + 2] = ' ';
+                canvas[YY + 2][XX] = '|';
+                canvas[YY + 2][XX + 1] = ' ';
+                canvas[YY + 2][XX + 2] = '|';
                 canvas[YY + 2][XX + 3] = ' ';
-                canvas[YY + 2][XX + 4] = '|';
+                canvas[YY + 2][XX + 4] = ' ';
+                canvas[YY + 2][XX + 5] = '|';
     
                 // Down a third row, builds \|__|
-                canvas[YY + 3][XX] = '\\';
-                canvas[YY + 3][XX + 1] = '|';
-                canvas[YY + 3][XX + 2] = '_';
+                canvas[YY + 3][XX + 1] = '\\';
+                canvas[YY + 3][XX + 2] = '|';
                 canvas[YY + 3][XX + 3] = '_';
-                canvas[YY + 3][XX + 4] = '|';
+                canvas[YY + 3][XX + 4] = '_';
+                canvas[YY + 3][XX + 5] = '|';
             }
         }
         }
@@ -190,27 +190,48 @@ public class blockrenderer {
     }
 
     public static void main(String[] args) {
-        blockrenderer b = new blockrenderer(3, 4, 2);
-        System.out.println("Height: " + b.blocks().length + " Width: " + b.blocks()[0].length + " Depth: " + b.blocks()[0][0].length);
-        System.out.println("Height: " + b.canvas().length + " Width: " + b.canvas()[0].length);
-        /*int[][][][] order = getSortedCoordinates(b.blocks());
+        blockrenderer b = new blockrenderer(10, 10, 10);
+        //System.out.println("Height: " + b.blocks().length + " Width: " + b.blocks()[0].length + " Depth: " + b.blocks()[0][0].length);
+        //System.out.println("Height: " + b.canvas().length + " Width: " + b.canvas()[0].length);
+        //System.out.println("YY: " + ((b.canvas().length-1) - ((1+0) * 2) - (b.blocks[0][0].length - 1)));
+        int[][][][] order = getSortedCoordinates(b.blocks());
         while(true) {
             b.rainBlocks(b.blocks);
             draw(b.blocks(),b.canvas(), order);
             display(b.canvas);
             b.physics(b.blocks);
             wait(10);
-        }*/
+        }
     }
 }
 
-/* ___________
- *|\__\__\__\__\
- *| |\__\__\__\__\
- *|\| |  |  |  |  |
- *| |\|__|__|__|__|
- *|\| |  |  |  |  |
- *| |\|__|__|__|__|
- * \| |  |  |  |  |
- *   \|__|__|__|__|
+/*                    0____________
+ *             2,3,0->|\__\__\__\__\
+ *                    | |\__\__\__\__\
+ * [hZ-1][wX-1][dY-1]---> |  |  |  |  |
+ *   2     3     1    | |\|__|__|__|__|
+ *                    |\| |  ||__|__|
+ *                    | |\|__||  |  |
+ *                     \| |  ||__|__|<------- 0,0,0
+ *                       \|__|  
+ * Canvas height (canvas.length): 9
+ * Canvas width (canvas[0].length): 17
+ * 
+ * block[z][x][y] has XX of (canvas()[0].length-1) - ((1+x) * 3) - ((blocks[0][0].length - y) * 2)
+ * Because x = 0 on canvas is on the opposite side of x = 0 in the block array, we need to subtract from the length of the array
+ * and subtract 1 again (because .length is 1 more than the last index of an array). Then we need to take the number of blocks on 
+ * the width axis and multiply it by the chars wide the x side is (3 chars). BUT, the 0th index block still needs to have a width
+ * (0 * 3 = 0), we add 1 so that even if it's at index 0 it still is printed with 3 chars. Then, notice that the depth side is inverted. 
+ * As we get farther from the camera, the index of depth DECREASES. Because of this, we need to subtract FROM the total number of blocks
+ * on the depth axis. What are we subtracing? The depth index of the block. Then multiply by two as the depth axis on a block texture is
+ * 2 chars wide. Now if a block is on depth index 0, it knows that 2 sets of depth chars need to be rendered.
+ * 
+ * block[z][x][y] has YY of (canvas().length-1) - ((1+z) * 2) - (blocks[0][0].length - y)
+ * Because y = 0 on canvas is on the opposite side of y = 0 on the block array, we need to subtract from the length of the array
+ * and subtract 1 again (because .length is 1 more than the last index of an array). Then, we need to take the number of blocks on
+ * the height axis and multiply it by the number of chars on the height axis of each block(2 chars). However, a block on the 0th index
+ * of the height axis in the blocks array still exists, we need to count those chars, so we will add 1 to the count. The depth side is
+ * even easier. The depth side of each block is only 1 char tall, so all we do is subtract from that. Similar to XX, the depth side is
+ * inverted, so a block on the 0th depth index needs 2 chars of depth axis instead of 1. Now, if a block is at depth 0, it will still
+ * print all of the blocks' depth axis chars before printing the front side.
  */
