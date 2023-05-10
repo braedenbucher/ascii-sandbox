@@ -28,20 +28,20 @@ Takes a 3d grid of blocks, and renders them isometrically with ASCII characters.
          \|__|__|__|__|__|__|    \|__| \|__| \|__|__|__|
 ```
 ## Usage
-To create a 'scene' per se, construct a blockrenderer object with the height, width, and depth of your space (respectively).
+To create a scene to render, construct a blockrenderer object with the height, width, and depth of your space (respectively).
 ```java
 blockrenderer b = new blockrenderer(10, 8, 4);
 ```
-Then, create the sorted coordinate list of your blockrenderer scene, which will allow the printer to know in which order to print blocks.
+Next, create the sorted coordinate list of your blockrenderer scene, which will allow the printer to know in which order to print blocks. You can skip this step and input the value directly into the draw method call if you wish, but I find this to be easier to read.
 ```java
 int[][][][] order = getSortedCoordinates(b.blocks());
 ```
-Now if you wanted to simply render the grid right then and there, you can draw the grid to the canvas and display it:
+Printing the scene is composed of 2 calls. The draw() method maps the 3d scene to the canvas, and then the display() method builds a string of the scene to print out to the terminal.
 ```java
 draw(b.blocks(),b.canvas(), order);
 display(b.canvas);
 ```
-I did, however, make some methods to allow for a rain-like effect with blocks piling up on the scene to demonstrate it's utility:
+To test it's functionality, there are a few methods to simulate a rain-like effect with blocks piling up:
 ```java
 b.randomize(b.blocks);
 while(true) {
@@ -52,26 +52,23 @@ while(true) {
     wait(10);
 }
 ```
-The code does the following [from top -> bottom]:
-- Creates a random assortment of blocks in the 3d space (~10% of the grid)
-- On the top layer, places a few blocks at random (~2% chance)
-- Draws the grid to the canvas and displays it
-- Runs physics on the blocks, so blocks not supported fall down one cell
-- Pauses the thread for ~10ms
+The segment simply initializes the grid with a random assortment of blocks, draws and displays them to the screen, moves all unsupported blocks one cell downwards, and then pauses the thread for ~10ms. Method explanations below.
 ## Explanation
 Quick summary: Each object has a 3D grid and a 2D canvas for printing. The 2D canvas is created based on the size of the 3D grid when an object is created. Sorted coordinates determine which blocks to print in the back and front, and the printer method appends characters to the canvas based on this order. The display method builds a string to print to the screen. The following modules go more in-depth into each method.
 
 ### Scene attributes
-A render object has 2 attrbute components, the 3d grid of integers, and the 2d array of chars that is printed to the screen. The grid really only utilizes 0 or 1(empty/block), but other numbers can be used to identify different types of blocks if you wish. There are two helper methods to pull the grid and canvas if you wish.
+A render object has 2 attrbute components, the 3d grid of integers, and the 2d array of chars that is printed to the screen. The grid really only utilizes 0 or 1(empty/block), but other numbers can be used to identify different types of blocks. There are two helper methods to pull the grid and canvas:
+- object.blocks()
+- object.canvas()
 
 ### The Constructor
 ```java
 public blockrenderer(int hZ, int wX, int dY)
 ```
 The constructor takes in the height, width, and depth of the grid. 
-- hZ means height & z-axis are the same
-- wX means width & x-axis are the same
-- dY means depth & y-axis are the same
+- hZ indicates height & z-axis are the same
+- wX indicates width & x-axis are the same
+- dY indicates depth & y-axis are the same
 Along with this, the signature indicates what the coordinate system is. Blocks are identified by [z,x,y] instead of [x, y, z].
 
 Next, the canvas is defined based on the grid's dimensions. A block texture is depicted below:
@@ -92,13 +89,13 @@ For example, the row of blocks above would have a canvas height width of:
 4 = 1 + 1 + (2 * 1)
 12 = 1 + (2 * 1) + (3 * 3)
 ```
-Other than that, the grid is initialized to 0 (empty tiles) and the canvas is initialized to ' ' (empty char).
+Other than that, the grid is initialized to 0 (empty tiles) and the canvas is initialized to ' ' (whitespace char).
 
 ### Sorting the coordinates
 ```java
 public static int[][][][] getSortedCoordinates(int[][][] blocks)
 ```
-When you view to objects, one in front of the other, which object overlays the other? The object closer to you. When we draw block textures to the canvas, we need to be aware that blocks behind other blocks need to be printed **first**. The way I have implemented this is by *sorting the coordinates*. All we need to do is to take in the 3d grid, and throw out a list where each cell is it's own coordinates. That way our draw function can make sure that the first blocks printed are printed to the back.
+When you view two objects, one in front of the other, which object overlays the other? The object closer to you. When we draw block textures to the canvas, we need to be aware that blocks behind other blocks need to be printed **first**. The way I have implemented this is by *sorting the coordinates*. All we do is to take in the 3d grid, and throw out a list where each cell is it's own coordinates. That way our draw function can make sure that the first blocks printed are printed to the back.
 
 For this method, I created an X, Y, and Z variable to store the length of that axis.
 Then, I initialized a 4d list. 
@@ -121,7 +118,6 @@ So when returned to a variable, the printer method can make sure to print blocks
 ```java
 public static void draw(int[][][] blocks, char[][] canvas, int[][][][] order)
 ```
-The big bad printer method I keep talking about.
 First thing's first, the canvas is wiped so every char is back to being ' '. Then, 3 for-each loops scroll through the 3d list to each 3-element coordinate. Convenience variables are assigned to the coordinate's z, x, and y values.
 
 Next, we need to take the 3d coordinates we were given, and throw out the x and y coordinates on the 2d canvas to print the block. These x and y coordinates are referred to as XX and YY:
@@ -199,7 +195,7 @@ First, The two alignment variables that were used in the previous code are gone,
 
 Second, the previous canvas coords from 3d coords (called XX and YY) were entirely incorrect in the previous code, and mapped the location blocks needed to start printing at 1 char to the right. I have updated the draw function's texture printer to refled the 1 char alignment difference.
 
-Third and most importantly, the math to plot the canvas coords is fixed. It takes the 3d coords, spits out the upper-leftmost corner of the texture, and never runs out of bounds of the canvas.
+Third and most importantly, the math to plot the canvas coords is fixed. It takes the 3d coords, spits out the upper-leftmost corner of the texture, and never runs out of bounds of the canvas. Renderer usable.
 
 ## Major Updates - 4/28
 To update the limited capability of the code and optimize it's performace, I am reworking the math needed to run the draw() function. To start, the canvas has been on a set size this entire time. Doing the math, I updated the constructor to initialize a canvas that fits the necessary block chars perfectly(Based on a block being 3 chars on x, 2 chars on z, and 1 char on y). This breaks the function as the math to take 3d coordinates and print them on a 2d canvas now no longer works and repeatedly throws out of bounds errors. Renderer currently unusable
