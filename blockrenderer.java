@@ -4,11 +4,9 @@ import java.util.Comparator;
 public class blockrenderer {
     private int[][][] blocks; // 3d array
     private char[][] canvas; // printed to screen
-    private static String ANSI_RESET = "\u001B[0m";
-    private static String ANSI_COLOR = "";
 
     public blockrenderer() {
-        this(10,8,4);
+        this(10,15,7);
     }
 
     public blockrenderer(int hZ, int wX, int dY) { // constructor initializes blocks and canvas
@@ -62,14 +60,7 @@ public class blockrenderer {
             int YY = (canvas.length-1) - ((1+z) * 2) - (blocks[0][0].length - y);
             int XX = (canvas[0].length-1) - ((1+x) * 3) - (blocks[0][0].length - y) * 2;
 
-            if (blocks[z][x][y] != 0) { // if block at current position
-                if (blocks[z][x][y] == 1) { ANSI_COLOR = "\u001B[31m"; }
-                else if (blocks[z][x][y] == 2) { ANSI_COLOR = "\u001B[32m"; }
-                else if (blocks[z][x][y] == 3) { ANSI_COLOR = "\u001B[33m"; }
-                else if (blocks[z][x][y] == 4) { ANSI_COLOR = "\u001B[34m"; }
-                else if (blocks[z][x][y] == 5) { ANSI_COLOR = "\u001B[35m"; }
-                else if (blocks[z][x][y] == 6) { ANSI_COLOR = "\u001B[36m"; }
-                
+            if (blocks[z][x][y] == 1) { // if block at current position
                 // Top of block, builds ___
                 if (canvas[YY][XX + 1] == ' ') {
                     canvas[YY][XX + 1] = '_';
@@ -198,7 +189,7 @@ public class blockrenderer {
     }
 
     public static void main(String[] args) {
-        blockrenderer b = new blockrenderer(19,14,9);
+        blockrenderer b = new blockrenderer();
         int[][][][] order = getSortedCoordinates(b.blocks());
         while(true) {
             b.rainBlocks(b.blocks);
