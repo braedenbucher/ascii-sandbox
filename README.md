@@ -150,12 +150,10 @@ The most straightforward out of all of these methods. A stringbuilder object tak
 ### Clearing the terminal & wait command
 ```java
 public static void clearScreen()
-    System.out.print("\033[H\033[2J");
+    System.out.print("\033[2J");
     System.out.flush();
 ```
-The first line is where the actual clearing of the screen occurs. This line sends two escape codes to the terminal. The first code \033[H sets the cursor to the top-left corner of the terminal, while the second code \033[2J clears the screen from the cursor position to the end of the screen. The escape codes are represented using the ASCII esc character \033, followed by the corresponding control sequence.
-
-The second line flushes the output stream, ensuring that all characters are written to the terminal before the method returns.
+The first line is where the actual clearing of the screen occurs. The escape code '\033[2J' clears the entire terminal. The second line flushes the output stream, ensuring that all characters are written to the terminal before the method returns.
 
 ```java
 public static void wait(int ms)
@@ -163,6 +161,7 @@ public static void wait(int ms)
         Thread.sleep(ms);
     } catch(InterruptedException ex) {
         Thread.currentThread().interrupt();
+    }
 ```
 The first line simply tells java to run the code, but if a certain error occurs(InterruptedException in this case), then don't exit the program, run the catch sequence. The actual Thread.sleep command uses a *long* type to stop the execution of the current output.
 The catch sequence is to... interrupt the interrupt. It's kind of a double negative to cancel out the exception.
