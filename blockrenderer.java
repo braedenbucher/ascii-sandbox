@@ -33,14 +33,14 @@ public class blockrenderer {
     // This tells the draw function which coordinates to draw first so the blocks
     // in the back are printed first and the blocks in the front are printed last
     public static int[][][][] getSortedCoordinates(int[][][] blocks) {
-        int X = blocks[0].length; // length of X
-        int Y = blocks[0][0].length; // length of Y
-        int Z = blocks.length; // length of Z
+        int X = blocks[0].length;
+        int Y = blocks[0][0].length;
+        int Z = blocks.length;
         int[][][][] sorted = new int[Z][X][Y][3]; // copy blocks list where each cell is now a 3-element list to put x, y, z coords into
         for (int z = 0; z < Z; z++) {
             for (int x = 0; x < X; x++) {
                 for (int y = 0; y < Y; y++) {
-                    sorted[z][x][y] = new int[]{z, x, y}; // each tuple element is that cell's coordinates
+                    sorted[z][x][y] = new int[]{z, x, y}; // each triplet element is that cell's coordinates
                 }
             }
         }
@@ -57,7 +57,7 @@ public class blockrenderer {
             int y = coord[2];
             int z = coord[0];
 
-            int YY = (canvas.length-1) - ((1+z) * 2) - (blocks[0][0].length - y);
+            int YY = (canvas.length-1) - ((1+z) * 2) - (blocks[0][0].length - y); // idk tbh
             int XX = (canvas[0].length-1) - ((1+x) * 3) - (blocks[0][0].length - y) * 2;
 
             if (blocks[z][x][y] == 1) { // if block at current position
@@ -105,7 +105,7 @@ public class blockrenderer {
         for (int y = 0; y < blocks[0][0].length; y++) { // for all cells
             for (int x = 0; x < blocks[0].length; x++) {
                 for (int z = 0; z < blocks.length - 1; z++) {
-                    if (blocks[z + 1][x][y] == 1) { // if upper cell has block
+                    if (blocks[z + 1][x][y] == 1) { // if z+1 cell has block
                         if (blocks[z][x][y] == 0) { // but this cell has no block
                             blocks[z][x][y] += blocks[z + 1][x][y]; // this cell now has block
                             blocks[z + 1][x][y] = 0; // upper cell now has no block
@@ -122,8 +122,8 @@ public class blockrenderer {
                 }
             }
         }
-        if (emptyCount == 0) { // if bottom layer is all filled
-            // Delete the bottom layer by shifting all the layers above it down by one
+        if (emptyCount == 0) { // tetris-style layer removal
+            // Delete the bottom layer by shifting all the layers above it down by one (arraycopy)
             for (int i = 0; i < blocks.length - 1; i++) {
                 for (int j = 0; j < blocks[0].length; j++) {
                     System.arraycopy(blocks[i + 1][j], 0, blocks[i][j], 0, blocks[0][0].length);
@@ -139,18 +139,18 @@ public class blockrenderer {
     }
     
     public static void display(char[][] canvas) {
-        StringBuilder temp = new StringBuilder(); // some way to turn chars into a string
-        for (char[] line : canvas) { // for all lines on canvas
-            for (char pixel : line) { // for all chars on line
-                temp.append(pixel); // append current char to output
+        StringBuilder temp = new StringBuilder(); // some way to turn chars into a string (faster than char-by-char, I tested)
+        for (char[] line : canvas) {
+            for (char pixel : line) {
+                temp.append(pixel); // append every line char to output obj
             }
-            temp.append("\n"); // new line every time theres... a new line
+            temp.append("\n"); // throw newline to output obj
         }
-        clearScreen(); // call that clear screen method
-        System.out.print(temp.toString()); // print total result
+        clearScreen();
+        System.out.print(temp.toString()); // toString converts object -> string
     } 
     
-    // randomly throws blocks around the canvas
+    // randomly throws blocks around the 3d grid
     public void randomize(int[][][] blocks) {
         for(int z = 0; z < blocks.length; z++) {
             for (int x = 0; x < blocks[0].length; x++) {
@@ -161,7 +161,7 @@ public class blockrenderer {
             }
         }
     }
-    // randomly adds blocks only to top layer for rain mode
+    // randomly adds blocks only to top layer (z-axis.length-1) for rain mode
     public void rainBlocks(int[][][] blocks) {
         int z = blocks.length-1;
         for(int x = 0; x < blocks[0].length; x++) {
@@ -169,14 +169,15 @@ public class blockrenderer {
                 if (Math.random() > .995) {
                     blocks[z][x][y] = 1;
                 } else {
-                    blocks[z][x][y] = 0;
+                    blocks[z][x][y] = 0; // empty tile
                 }
             }
         }
     }
 
-    public static void clearScreen() {  // clear the terminal using system code
-        System.out.print("\033[H\033[2J"); // no i didnt write it
+    public static void clearScreen() { // clear terminal screen w/ 033 ESC
+        System.out.print("\u001b[2J"); // Unicode ESC call (identifier 001) 8-bit screen erase
+        // System.out.print("\033[2J"); // Octal ESC call . . .
         System.out.flush();
     }
 
@@ -184,7 +185,7 @@ public class blockrenderer {
         try {
             Thread.sleep(ms);
         } catch(InterruptedException ex) {
-            Thread.currentThread().interrupt(); // no i didnt write this either
+            Thread.currentThread().interrupt(); // interrupt exception prevents error throws crashing exec.
         }
     }
 
@@ -215,6 +216,4 @@ public class blockrenderer {
  *                       \|__|  
  * Canvas height (canvas.length): 9
  * Canvas width (canvas[0].length): 17
- * 
-
  */
