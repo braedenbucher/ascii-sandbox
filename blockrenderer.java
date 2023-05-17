@@ -176,7 +176,7 @@ public class blockrenderer {
     }
 
     public static void clearScreen() { // clear terminal screen w/ 033 ESC
-        System.out.print("\u001b[2J"); // Unicode ESC call (identifier 001) 8-bit screen erase
+        System.out.print("\u001b[H\u001b[0J"); // Unicode ESC call (identifier 001) 8-bit screen erase
         // System.out.print("\033[2J"); // Octal ESC call . . .
         System.out.flush();
     }

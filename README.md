@@ -150,10 +150,12 @@ The most straightforward out of all of these methods. A stringbuilder object tak
 ### Clearing the terminal & wait command
 ```java
 public static void clearScreen()
-    System.out.print("\033[2J");
+    System.out.print("\u001b[H\u001b[0J");
     System.out.flush();
 ```
-The first line is where the actual clearing of the screen occurs. The escape code '\033[2J' clears the entire terminal. The second line flushes the output stream, ensuring that all characters are written to the terminal before the method returns.
+The first line is where the actual clearing of the screen occurs. It sends two escape codes to the terminal. Th first escape code '\u001b[H' moves the cursor to the top right of the terminal. The second escape code '\u001b[0J' clears the terminal from the cursor to the end of the screen. People who are proficient in ANSI escape codes may question why I don't use '\u001b[2J' which clears the entire screen by default without the need for cursor movement. It is because the terminals will have a siezure with the entire screen 'shaking' in a way. This is because the cursor jumps from 0,0 to the end of the terminal every 'frame', causing an extra line to be aded to the bottom of the terminal where the cursor jumps to, so every other frame the entire text is shifted up one line. This maintains the cursor at 0,0 and prevents it from jumping to the end.
+
+The second line flushes the output stream, ensuring that all characters are written to the terminal before the method returns.
 
 ```java
 public static void wait(int ms)
