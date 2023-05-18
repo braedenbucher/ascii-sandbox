@@ -122,7 +122,7 @@ public class blockrenderer {
                 }
             }
         }
-        if (emptyCount == 0) { // tetris-style layer removal
+        if (emptyCount <= (blocks[0].length*blocks[0][0].length) * .10) { // remove bottom layer if 90% of blocks are filled
             // Delete the bottom layer by shifting all the layers above it down by one (arraycopy)
             for (int i = 0; i < blocks.length - 1; i++) {
                 for (int j = 0; j < blocks[0].length; j++) {
@@ -175,9 +175,9 @@ public class blockrenderer {
         }
     }
 
-    public static void clearScreen() { // clear terminal screen w/ 033 ESC
-        System.out.print("\u001b[H\u001b[0J"); // Unicode ESC call (identifier 001) 8-bit screen erase
-        // System.out.print("\033[2J"); // Octal ESC call . . .
+    public static void clearScreen() {
+        System.out.print("\u001b[H\u001b[0J"); // Unicode ESC 0,0 call cursor & EOF screen erase
+        // System.out.print("\033[H\033[0J"); // Octal
         System.out.flush();
     }
 
@@ -197,14 +197,12 @@ public class blockrenderer {
             draw(b.blocks(),b.canvas(), order);
             display(b.canvas);
             b.physics(b.blocks);
-            wait(10);
+            wait(20); // 10 fast, 20 standard, 50 slow
         }
     }
 }
 
-// if the terminal is blinking on frames and having a sezuire when running
-// then comment out the clearScreen() call in display(), run it,
-// then un-comment it out, and then it should be fixed
+// if the terminal is blinking on frames, the terminal is too short, increase its height.
 /*                    0____________
  *             2,3,0->|\__\__\__\__\
  *                    | |\__\__\__\__\
