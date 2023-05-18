@@ -140,19 +140,6 @@ Then, each block is printed according to the following alignment(XX and YY is de
 ```
 It's printed in layers, so each row of the texture is assigned in succession.
 Now the canvas list can be displayed to the screen.
-### Physics on the blocks
-```java
-public void physics(int[][][] blocks)
-```
-Pretty simple method which does two things. First, at every cell it:
-- Checks if the current cell is NOT unoccupied
-- Checks if the cell above it (z+1) IS occupied
-- Empties the above cell
-- Fills the current cell
-Second:
-- Checks if 90% of blocks on bottom layer (z=0) are occupied
-- Shifts every layer down one using ArrayCopy
-- Makes the top layer (z-axis.length-1) all empty
 ### Display to the screen
 ```java
 public static void display(char[][] canvas)
@@ -201,6 +188,7 @@ To make use of the rendering and physics, I made two methods to simulate a 'rain
 The randomize() method goes through every block in the grid, and if a random decimal 0-1 is > .9, then it will add a block at that cell.
 
 The rainBlocks() method goes through every block in the top layer of the grid, and if a random decimal 0-1 is > .99, then ti will add a block at that cell.
+
 ## Major Updates - 5/17 [LATEST]
 I fixed the terminal seizure that happens when running the program. The clearScreen() method used an escape code(\u001b[2J) to clear the entire screen while the cursor was at the end of the terminal. So, I replaced it with two escape codes (\u001b[H, \u001b[0J) which first moves the cursor to 0,0 on the console, then clear the screen FROM the terminal to the end of the console. This holds the cursor at the beginning of the program every frame preventing empty frames with an extra line being printed.
 
