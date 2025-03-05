@@ -17,7 +17,7 @@ public class Scene {
         c_width = 1 + (2*depth)+ (3*width);
         c_height = 1 + depth + (2*height);
         canvas = new char[c_height][c_width];
-        for (char[] row : canvas) { Arrays.fill(row, ' '); }
+        update_canvas();
     }
 
     public void add_block(int horizontal, int vertical, int layer) {
@@ -37,7 +37,12 @@ public class Scene {
         blocks.add(insertion_index, block); // insert into sorted position
     }
 
+    public void remove_block(int horizontal, int vertical, int layer) {
+        blocks.removeIf(block -> block[0] == horizontal && block[1] == vertical && block[2] == layer);
+    }
+
     public void update_canvas() {
+        for (char[] row : canvas) { Arrays.fill(row, ' '); }
         char[][] texture = Textures.default_texture;
         for(int[] block: blocks) {
             for(int y = 0; y < 4; y++) {
