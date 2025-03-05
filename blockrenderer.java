@@ -188,18 +188,6 @@ public class blockrenderer {
             Thread.currentThread().interrupt(); // interrupt exception prevents error throws crashing exec.
         }
     }
-
-    public static void main(String[] args) {
-        blockrenderer b = new blockrenderer();
-        int[][][][] order = getSortedCoordinates(b.blocks());
-        while(true) {
-            b.rainBlocks(b.blocks);
-            draw(b.blocks(),b.canvas(), order);
-            display(b.canvas);
-            b.physics(b.blocks);
-            wait(20); // 10 fast, 20 standard, 50 slow
-        }
-    }
 }
 
 // if the terminal is blinking on frames, the terminal is too short, increase its height.
