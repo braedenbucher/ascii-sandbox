@@ -43,7 +43,7 @@ template.add_block(0,0,0);
 ```
 Update the projection:
 ```java
-template.construct_canvas();
+template.update_canvas();
 ```
 Generate the canvas as a printable `String`:
 ```java
