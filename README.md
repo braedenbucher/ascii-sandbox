@@ -41,6 +41,10 @@ Add a block to the scene using `.add_block()`, specifying coordinates:
 ```java
 template.add_block(0,0,0);
 ```
+Remove a vlock from the scene using `.remove_block`, specifying coordinates:
+```java
+template.remove_block(0,0,0);
+```
 Update the projection:
 ```java
 template.update_canvas();
