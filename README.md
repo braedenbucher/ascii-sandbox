@@ -56,3 +56,54 @@ template.construct_canvas()
 
 ## License
 This project is licensed under the MIT License.
+
+
+```mermaid
+graph LR
+
+global("Global Files")
+
+else(".folders .json .md")
+style else stroke:#BF4D43
+
+source("src/main")
+style source stroke:#409e39
+
+vendordeps("vendordeps/")
+style vendordeps stroke:#409e39
+
+gradle("Gradle Components")
+style gradle stroke:#409e39
+
+global --- else
+global --- source
+global --- vendordeps
+global --- gradle
+
+deploy("deploy")
+style deploy stroke:#BF4D43
+
+java("java/frc")
+style java stroke:#409e39
+
+source --- deploy
+source --- java
+
+utils("utils")
+style utils stroke:#BF4D43
+
+robot("robot")
+style robot stroke:#409e39
+
+java --- utils
+java --- robot
+
+linkStyle 0 color:#85827B
+linkStyle 1 color:#85827B
+linkStyle 2 color:#85827B
+linkStyle 3 color:#85827B
+linkStyle 4 color:#85827B
+linkStyle 5 color:#85827B
+linkStyle 6 color:#85827B
+linkStyle 7 color:#85827B
+```
